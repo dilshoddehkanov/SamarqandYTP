@@ -60,7 +60,10 @@ async def take_phone(message: Message, state: FSMContext):
 async def course_name(message: Message, state: FSMContext):
     courses_name = message.text
     courses = dbcu.select_all_users()
-    count = len(courses)
+    if courses:
+        count = courses[-1][0]
+    else:
+        count = 0
     dbcu.add_courseuser(id=count + 1, course=courses_name)
     user_id = message.from_user.id
     user = dbu.select_user(id=user_id)
@@ -159,7 +162,7 @@ async def take_day_time(message: Message, state: FSMContext):
         await message.answer(f'Siz {course[1]} kursiga yozildingiz.', reply_markup=Main_Menu_uz)
     else:
         await message.answer(f'Вы записались на курс {course[1]}.', reply_markup=Main_Menu_ru)
-    await bot.send_message(ADMINS[0], f'✅ {message.from_user.full_name} {course[1]} kursiga yozildi.')
+    # await bot.send_message(ADMINS[0], f'✅ {message.from_user.full_name} {course[1]} kursiga yozildi.')
     await state.finish()
 
 
